@@ -17,13 +17,11 @@ oai_client = AzureOpenAI(
     api_version="2024-02-01",
 )
 
+index_name = AZURE_SEARCH_INDEX_NAME
+
 def clean_str_for_id(id:str)->str:
     '''Cleans a string to be used as an id in Azure Search'''
     return re.sub(r'[^a-zA-Z0-9]','_',id)
-
-    # azure_endpoint=os.getenv("AZURE_OPENAI_DEPLOYMENT_ENDPOINT"),
-    # api_key=os.getenv("AZURE_OPENAI_DEPLOYMENT_API_KEY"),
-    # api_version="2024-02-01"
 
 def create_ai_search_index(index_name: str, fields: list = None):
     ai_search_index_client = SearchIndexClient(
@@ -125,18 +123,11 @@ def process_file_to_json(src_file_path: str, dest_file_path: str, vectorize=Fals
         json.dump(document, f)
 
 def upload_documents_to_index(index_name: str, document_paths: list, *,batch_size=5):
-    # azureSearchApiKey = os.getenv("AZURE_SEARCH_API_KEY")
-    # azureSearchEndpoint = AZURE_SEARCH_ENDPOINT # os.getenv("AZURE_SEARCH_ENDPOINT")
     ai_search_client = SearchClient(
         endpoint=AZURE_SEARCH_ENDPOINT, 
         index_name=index_name, 
         credential=AzureKeyCredential(AZURE_SEARCH_API_KEY),
     )
-    # ai_search_client = SearchClient(
-    #     endpoint=azureSearchEndpoint, 
-    #     index_name=index_name, 
-    #     credential=AzureKeyCredential(azureSearchApiKey),
-    # )
     batch = []
     for document_path in document_paths:
         with open(document_path, 'r') as f:
@@ -248,18 +239,6 @@ def process_video():
         dest_file = src_file.replace('/transcripts/','/transcripts_json/').replace('.txt', '.json')
         process_file_to_json(src_file, dest_file, vectorize=True)
     
-    # create index
-    index_name = 'transcripts'  
-    # create_ai_search_index(index_name, fields=[
-    #     SimpleField(name="id", type="Edm.String", key=True),
-    #     SearchableField(name="content", type="Edm.String", analyzer_name="en.microsoft"),
-    #     SimpleField(name="transcription_file_name", type="Edm.String", retrievable=True),
-    #     SimpleField(name="chunk_start_seconds", type="Edm.Int32", retrievable=True, filterable=True, sortable=True),
-    #     SimpleField(name="video_file_name", type="Edm.String", retrievable=True),
-    #     SimpleField(name="chunk_number", type="Edm.Int32", retrievable=True, filterable=True, sortable=True),
-    #     SearchField(name="vector", type="Collection(Edm.Single)", retrievable=True, vector_search_dimensions=1536, vector_search_profile_name='vector-profile-1'),
-    # ])
-
     # upload documents
     documents = glob('data/transcripts_json/*.json')
     upload_documents_to_index(index_name, documents)
@@ -281,7 +260,6 @@ def process_doc_intel(src_glob, *, create_index=False):
     pdfjson_folder = get_folder_full_path(src_glob)
     src_files: list[str] = glob(pdfjson_folder)
     
-    index_name = 'pdf_docintel'  
     # create index
     # if create_index:
     create_ai_search_index(index_name, fields=[
