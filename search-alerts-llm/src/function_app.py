@@ -1,10 +1,5 @@
 import azure.functions as func
 import logging
-from datetime import datetime, timedelta
-from src import chat 
-import json 
-import uuid 
-memory = {}
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from openai import AzureOpenAI
@@ -31,7 +26,6 @@ def alerts(req: func.HttpRequest) -> func.HttpResponse:
             credential=AzureKeyCredential(AZURE_SEARCH_API_KEY)
         )
 
-        # Define a search query
         # query = question = input("Enter your question: ")
         # query = "What triggers the CDSC Amount Threshold?"
         # query = "What are exceptions to the age max rule?"
@@ -95,16 +89,3 @@ def alerts(req: func.HttpRequest) -> func.HttpResponse:
             openAiMessage.content,
             status_code=200
         )
-
-@app.timer_trigger(schedule="0 */10 * * * *", arg_name="myTimer", run_on_startup=False,
-              use_monitor=False) 
-def clean_up_memory(myTimer: func.TimerRequest) -> None:
-    
-    if myTimer.past_due:
-        logging.info('The timer is past due!')
-
-    now = datetime.now()
-    for k in list(memory.keys()):
-        if now - memory[k]['last_modified'] > timedelta(minutes=30):
-            del memory[k]
-    
