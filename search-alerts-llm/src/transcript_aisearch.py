@@ -8,9 +8,6 @@ from azure.search.documents.indexes import SearchIndexClient
 from azure.search.documents.indexes.models import SimpleField, SearchableField, SearchIndex, SearchField
 from config import AZURE_SEARCH_INDEX_NAME, AZURE_SEARCH_API_KEY, AZURE_OPENAI_DEPLOYMENT_ENDPOINT, AZURE_OPENAI_DEPLOYMENT_KEY, AZURE_SEARCH_ENDPOINT, AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_KEY
 
-from dotenv import load_dotenv
-load_dotenv('.env', override=True)
-
 oai_client = AzureOpenAI(
     azure_endpoint=AZURE_OPENAI_DEPLOYMENT_ENDPOINT,
     api_key=AZURE_OPENAI_DEPLOYMENT_KEY,
@@ -77,13 +74,6 @@ def process_file_to_json(src_file_path: str, dest_file_path: str, vectorize=Fals
         "vector": list, # the vector representation of the content'
     }
     ```
-
-    Note: the vector is only computed if vectorize is set to True
-
-    Note: At this point, the transcriptions are put into one chunk. Please implement your
-    own logic to split the transcriptions into chunks if needed. My recommendation would be to 
-    have the transcripts printed per minute (or 30 seconds) of the video. In this case, the chunk_start_seconds
-    would be the start time of the chunk.
     '''
     print(f'processing {src_file_path} to {dest_file_path}')
 
@@ -116,6 +106,9 @@ def process_file_to_json(src_file_path: str, dest_file_path: str, vectorize=Fals
         json.dump(document, f)
 
 def upload_documents_to_index(index_name: str, document_paths: list, *,batch_size=5):
+    '''
+    Combine every 5 JSON files into one JSON file and upload that combined file to Azure Search
+    '''
     ai_search_client = SearchClient(
         endpoint=AZURE_SEARCH_ENDPOINT, 
         index_name=index_name, 
@@ -138,8 +131,8 @@ def process_doc_intel_to_json(src_file_path: str, dest_file_path: str, vectorize
     {
         "id": str, # the id of the document, in this case the video file name + chunk number
         "content": str, # the content of the text file
-        "original_file_name": str, # the name of the transcription file
-        "chunk_number": int, # the chunk number of the transcription
+        "original_file_name": str, # the name of the pdf.json file
+        "chunk_number": int, # the chunk number of the pdf.json file
         "vector": list, # the vector representation of the content'
     }
     ```
@@ -160,7 +153,6 @@ def process_doc_intel_to_json(src_file_path: str, dest_file_path: str, vectorize
     CONTENT_MIN_LENGTH = 3000
     completed = False
     chunk_number = 0
-    chunks = []
 
     while not completed:
         # Extract the maximum length of content
@@ -217,38 +209,14 @@ def process_doc_intel_to_json(src_file_path: str, dest_file_path: str, vectorize
             completed = True
         
 
-def process_video():
-    from dotenv import load_dotenv
-    load_dotenv('.env', override=True)
-    from glob import glob 
-    import shutil
-    src_files = glob('data/transcripts/*.txt')
-    shutil.rmtree('data/transcripts_json', )
-    os.makedirs('data/transcripts_json', exist_ok=True)
-
-    # convert txt files to json
-    for src_file in src_files:
-        src_file = src_file.replace('\\','/')
-        dest_file = src_file.replace('/transcripts/','/transcripts_json/').replace('.txt', '.json')
-        process_file_to_json(src_file, dest_file, vectorize=True)
-    
-    # upload documents
-    documents = glob('data/transcripts_json/*.json')
-    upload_documents_to_index(index_name, documents)
-    print('done')
-
 def get_folder_full_path(folder_name):
     current_folder = os.path.dirname(__file__)
     parent_folder = os.path.dirname(current_folder)
     target_folder = os.path.join(parent_folder, folder_name)
     return target_folder
 
-
 def process_doc_intel(src_glob, *, create_index=False):
-    from dotenv import load_dotenv
-    load_dotenv('.env', override=True)
     from glob import glob 
-    import shutil
 
     pdfjson_folder = get_folder_full_path(src_glob)
     src_files: list[str] = glob(pdfjson_folder)
