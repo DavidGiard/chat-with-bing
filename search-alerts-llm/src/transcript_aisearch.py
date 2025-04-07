@@ -29,13 +29,6 @@ def create_ai_search_index(index_name: str, fields: list = None):
         credential=AzureKeyCredential(AZURE_SEARCH_API_KEY),
     )
 
-    try:
-        ai_search_index_client.get_index(index_name)
-        print(f"Index {index_name} already exists. No need to create a new index.")
-        return
-    except Exception as e:
-        print(f"Index {index_name} does not exist. Creating a new index.")
-
     # Check if the index already exists
     try:
         ai_search_index_client.get_index(index_name)
