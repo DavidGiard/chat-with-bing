@@ -2,7 +2,7 @@
 
 The code is in the _src_ folder.
 
-Sample videos are in the _videos-to-search_ folder. They are all in MP4 format.
+Sample videos are in the _data\videos-to-search_ folder. They are all in MP4 format.
 
 You will need to:
 
@@ -23,5 +23,3 @@ You will need to:
 Here is the flow of information:
 
 ![Flow of Information](./images/search-videos-llm.png)
-
-
