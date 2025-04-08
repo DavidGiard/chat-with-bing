@@ -1,8 +1,12 @@
 # Search Alerts Documents Using Natural Language
 
+## File Locations
+
 The code is in the _src_ folder.
 
-Sample documents are in the _docs-to-search_ folder.
+Sample documents are in the _data\pdf_docintel_ folder.
+
+## Setup
 
 You will need to:
 
@@ -29,5 +33,8 @@ In Document Intelligence studio (http://documentintelligence.ai.azure.com/)
 - In the code:
     - Rename config-sample.py to config.py
     - update values in config.py corresponding to the assets created in Azure
-- Run transcript-aisearch.py
+
+# Running the Code
+
+- Run alerts-aisearch.py
 - Run app.py
