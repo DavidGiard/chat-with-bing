@@ -245,3 +245,4 @@ def process_doc_intel(src_glob, *, create_index=False):
 if __name__ == "__main__":
     # process_PDFs
     process_doc_intel('data/pdf_docintel/*.pdf.json', create_index=False)
+    print('done')
