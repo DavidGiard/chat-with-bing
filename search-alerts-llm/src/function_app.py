@@ -7,7 +7,7 @@ from config import AZURE_SEARCH_INDEX_NAME, AZURE_SEARCH_API_KEY, AZURE_OPENAI_D
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
-@app.route(route="alerts")
+@app.route(route="func init --pychoco install azure-funcnpm install -g azure-functions-core-tools@4 --unsafe-perm true")
 def alerts(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
