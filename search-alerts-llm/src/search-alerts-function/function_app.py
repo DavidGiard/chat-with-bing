@@ -11,6 +11,14 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 def searchalertdocs(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
+    # Environment variables for Azure Search and OpenAI
+    AZURE_SEARCH_ENDPOINT = "https://<your-search-endpoint>.search.windows.net"
+    AZURE_SEARCH_API_KEY = "<your-search-api-key>"  # Replace with your Azure Search API key
+    AZURE_SEARCH_INDEX_NAME = "<your-index-name>"
+    AZURE_OPENAI_DEPLOYMENT_ENDPOINT = "https://<your-openai-endpoint>.openai.azure.com/"   # Replace with your Azure OpenAI endpoint
+    AZURE_SEARCH_API_KEY = "<your-openai-api-key>"  # Replace with your Azure OpenAI API key
+    AZURE_OPENAI_DEPLOYMENT_KEY = "<your-openai-api-key>"  # Replace with your Azure OpenAI API key
+
     query = req.params.get('query')
 
     if not query:
