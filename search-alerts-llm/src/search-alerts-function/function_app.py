@@ -27,10 +27,11 @@ def searchalertdocs(req: func.HttpRequest) -> func.HttpResponse:
         credential=AzureKeyCredential(AZURE_SEARCH_API_KEY)
     )
 
-    # query = question = input("Enter your question: ")
-    # query = "What triggers the CDSC Amount Threshold?"
-    # query = "What are exceptions to the age max rule?"
-    # query = "What triggers an alert?"
+    # Sample queries to test the function:
+    #  query=question = input("Enter your question: ")
+    #  query="What triggers the CDSC Amount Threshold?"
+    #  query="What are exceptions to the age max rule?"
+    #  query="What triggers an alert?"
 
     results = client.search(query)
     logging.info(f"Search results for query: '{query}'") 
