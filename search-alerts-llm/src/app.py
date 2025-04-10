@@ -47,7 +47,7 @@ def main():
     sys_prompt = f'''
     Answer questions about processes and filters found in the work documents. Be professional in your response.
     ++++
-    {relevant_documents[0]}
+    {all_documents}
     ++++
     '''
 

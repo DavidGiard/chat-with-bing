@@ -21,11 +21,11 @@ def searchalertdocs(req: func.HttpRequest) -> func.HttpResponse:
         else:
             query = req_body.get('name')
 
-    # client = SearchClient(
-    #     endpoint=AZURE_SEARCH_ENDPOINT,
-    #     index_name=AZURE_SEARCH_INDEX_NAME,
-    #     credential=AzureKeyCredential(AZURE_SEARCH_API_KEY)
-    # )
+    client = SearchClient(
+        endpoint=AZURE_SEARCH_ENDPOINT,
+        index_name=AZURE_SEARCH_INDEX_NAME,
+        credential=AzureKeyCredential(AZURE_SEARCH_API_KEY)
+    )
 
     # query = question = input("Enter your question: ")
     # query = "What triggers the CDSC Amount Threshold?"
@@ -49,19 +49,24 @@ def searchalertdocs(req: func.HttpRequest) -> func.HttpResponse:
     for doc in relevant_documents:
         logging.info(doc)
 
-    # oaiClient = AzureOpenAI(
-    #     api_version="2024-10-21",
-    #     azure_endpoint=AZURE_OPENAI_DEPLOYMENT_ENDPOINT,
-    #     api_key=AZURE_OPENAI_DEPLOYMENT_KEY,
-    # )
+    all_documents = ""
+    for doc in relevant_documents:
+        all_documents += doc + "\n"
+
+    oaiClient = AzureOpenAI(
+        api_version="2024-10-21",
+        azure_endpoint=AZURE_OPENAI_DEPLOYMENT_ENDPOINT,
+        api_key=AZURE_OPENAI_DEPLOYMENT_KEY,
+    )
 
     sys_prompt = f'''
     Answer questions about processes and filters found in the work documents. Be professional in your response.
     ++++
-    {relevant_documents[0]}
+    {all_documents}
     ++++
     '''
-    new_msg = relevant_documents[0] 
+    # new_msg = relevant_documents[0] 
+    new_msg = all_documents
 
     history=[]
     inputs = [
