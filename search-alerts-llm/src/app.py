@@ -15,8 +15,8 @@ def main():
     # Define a search query
     # query = question = input("Enter your question: ")
     # query = "What triggers the CDSC Amount Threshold?"
-    # query = "What are exceptions to the age max rule?"
-    query = "What triggers an alert?"
+    query = "What are exceptions to the age max rule?"
+    # query = "What triggers an alert?"
     results = client.search(query)
     print(f"Search results for query: '{query}'") 
 
@@ -34,6 +34,10 @@ def main():
     for doc in relevant_documents:
         print(doc)
 
+    all_documents = ""
+    for doc in relevant_documents:
+        all_documents += doc + "\n"
+
     oaiClient = AzureOpenAI(
         api_version="2024-10-21",
         azure_endpoint=AZURE_OPENAI_DEPLOYMENT_ENDPOINT,
@@ -46,7 +50,9 @@ def main():
     {relevant_documents[0]}
     ++++
     '''
-    new_msg = relevant_documents[0] 
+
+    new_msg = all_documents
+    # new_msg = relevant_documents[0] 
 
     history=[]
     inputs = [
@@ -65,7 +71,15 @@ def main():
         stop=["\n", " Human:", " AI:"],
     )
 
-    openAiMessage = openAiResult.choices[0].message
+    # openAiMessage = openAiResult.choices[0].message
+    openAiMessage = None
+    for choice in openAiResult.choices:
+        # Append the message to the variable
+        if openAiMessage is None:
+            openAiMessage = choice.message
+        else:
+            openAiMessage += choice.message + '\n'
+
 
     print("============================")
     print(f'Query {query}')
