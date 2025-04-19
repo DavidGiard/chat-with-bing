@@ -2,3 +2,7 @@ src/config.py
 data/transcripts/*.txt
 data/transcripts_json/*.json
 data/videos-to-search/*.mp4
+src/__pycache__/*.pyc
+src/__pycache__/*.pyo
+src/__pycache__/*.pyd
+src/__pycache__/*.so

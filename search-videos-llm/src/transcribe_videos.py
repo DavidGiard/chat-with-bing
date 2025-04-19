@@ -17,13 +17,9 @@ Functions:
 Note:
 - This script is intended for demonstration purposes only and is not designed for production use.
 """
-import requests
-import json
 import os
 from openai import AzureOpenAI
-from config import AZURE_SEARCH_INDEX_NAME, AZURE_SEARCH_API_KEY, AZURE_OPENAI_DEPLOYMENT_ENDPOINT, AZURE_OPENAI_DEPLOYMENT_KEY, DEPLOYED_MODEL, AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_WHISPER_DEPLOYMENT_ENDPOINT, AZURE_OPENAI_WHISPER_DEPLOYMENT_KEY, AZURE_OPENAI_WHISPER_DEPLOYMENT_VERSION, AZURE_STORAGE_CONNECTION_STRING
-from azure.core.credentials import AzureKeyCredential
-from azure.search.documents import SearchClient
+from config import AZURE_OPENAI_WHISPER_DEPLOYMENT_ENDPOINT, AZURE_OPENAI_WHISPER_DEPLOYMENT_KEY, AZURE_OPENAI_WHISPER_DEPLOYMENT_VERSION, AZURE_STORAGE_CONNECTION_STRING
 from azure.storage.blob import BlobServiceClient
 
 def get_video_full_path(file_name, folder_name):
